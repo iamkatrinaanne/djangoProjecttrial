@@ -12,3 +12,30 @@
     <p>No polls are available.</p>
 {% endif %}
 </div>
+
+
+<!-- <h2>Comments section:</h2>
+{% for comment in question.comment_set.all %}
+    <li><label for="comment{{ forloop.counter }}">{{ comment.comment_text }}</label></li>
+{% endfor %}
+</div> -->
+
+<div class="box">
+    <h1>Comments</h1>
+    <form method="post">
+<textarea name="comment_text" class="comment" id = "comment{{forloop.counter}}" placeholder="author"></textarea><br>
+<textarea name="author" class="comment" id = "comment{{forloop.counter}}" placeholder="date"></textarea>
+<br>
+<input type="submit" value="Submit" />
+<h2>{{ text }}</h2>
+        
+        <h1>{{ comment.comment_text }}</h1>
+        <p>{{ comment.comment_author }} </p>
+</div>
+</form>
+
+
+<!--     question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    comment_text = models.TextField()
+    author = models.CharField(max_length=200)
+    created_date = models.DateTimeField(default=timezone.now) -->

@@ -4,7 +4,8 @@ from django.utils import timezone
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.views import generic
-from .models import Question
+from .models import Question, Choice, Comment
+
 
 class IndexView(generic.ListView):
     template_name = 'polls/index.html'
@@ -18,6 +19,12 @@ class IndexView(generic.ListView):
 
 
 class DetailView(generic.DetailView):
+    model= Question
+    template_name='polls/details.html'
+    posts=Question.objects.all()
+    print(posts)
+    # args={'[polls]': polls, 'posts': posts}
+    
     ...
     def get_queryset(self):
         """
@@ -39,9 +46,6 @@ def detail(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
     return render(request, 'polls/detail.html', {'question': question})
 
-def comment(comment, question_id):
-    question = get_object_or_404(Question, pk=question_id)
-    return render(request,  {'question': question})
 
 def results(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
@@ -61,7 +65,7 @@ def vote(request, question_id):
     else:
         selected_choice.votes += 1
         selected_choice.save()
-        if comments is not "":
+        if comment is not "":
             question.comment_set.create(comment_text=request.POST['comment'])
             question.save()      
         return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
