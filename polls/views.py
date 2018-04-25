@@ -39,6 +39,10 @@ def detail(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
     return render(request, 'polls/detail.html', {'question': question})
 
+def comment(comment, question_id):
+    question = get_object_or_404(Question, pk=question_id)
+    return render(request,  {'question': question})
+
 def results(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
     return render(request, 'polls/results.html', {'question': question})
@@ -47,6 +51,7 @@ def vote(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
     try:
         selected_choice = question.choice_set.get(pk=request.POST['choice'])
+        comments = request.POST['comment']
     except (KeyError, Choice.DoesNotExist):
         # Redisplay the question voting form.
         return render(request, 'polls/detail.html', {
@@ -56,7 +61,7 @@ def vote(request, question_id):
     else:
         selected_choice.votes += 1
         selected_choice.save()
-        # Always return an HttpResponseRedirect after successfully dealing
-        # with POST data. This prevents data from being posted twice if a
-        # user hits the Back button.
+        if comments is not "":
+            question.comment_set.create(comment_text=request.POST['comment'])
+            question.save()      
         return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
